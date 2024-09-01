@@ -25,10 +25,17 @@
       :items="tagList"
   />
 
+  <div style="padding: 0 16px">
+    <van-button block type="primary" @click="doSearchResult">搜索</van-button>
+  </div>
+
 </template>
 
 <script setup>
 import {ref} from 'vue';
+import {useRouter} from "vue-router";
+
+const router = useRouter();
 
 const searchValue = ref('');
 // 已选标签
@@ -37,9 +44,16 @@ const activeIndex = ref(0);
 // 原始标签列表
 const originTagList = [
   {
+    text: '性别',
+    children: [
+      {text: '男', id: '男'},
+      {text: '女', id: '女'},
+    ],
+  },
+  {
     text: '浙江',
     children: [
-      {text: '杭州', id: '杭州aaaaaaaaaaaaaaaaaaaaaaaaaaa'},
+      {text: '杭州', id: '杭州'},
       {text: '温州', id: '温州'},
       {text: '宁波', id: '宁波', disabled: true},
     ],
@@ -77,6 +91,15 @@ const doClose = (tag) => {
   activeIds.value = activeIds.value.filter(item => {
     return item !== tag;
   })
+}
+
+const doSearchResult = () => {
+  router.push({
+    path: '/user/list',
+    query: {
+      tags: activeIds.value,
+    }
+  });
 }
 </script>
 

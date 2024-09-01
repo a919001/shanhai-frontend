@@ -16,10 +16,14 @@
 
 <script setup lang="ts">
 
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {ref} from "vue";
+import myAxios from "../plugins/MyAxios.ts";
+import {showFailToast, showSuccessToast} from "vant";
+import {getCurrentUser} from "../services/user";
 
 const route = useRoute();
+const router = useRouter();
 
 const editUser = ref({
   editKey: route.query.editKey,
@@ -27,8 +31,26 @@ const editUser = ref({
   editName: route.query.editName,
 })
 
-const onSubmit = (values) => {
-  console.log('submit', values);
+const onSubmit = async () => {
+
+  // 获取当前用户
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    showFailToast('请先登录');
+    return;
+  }
+
+  const res = await myAxios.post('/user/update', {
+    'id': currentUser.id,
+    [editUser.value.editKey]: editUser.value.currentValue
+  })
+  console.log(res, '更新请求');
+  if (res.code === 0 && res.data > 0) {
+    showSuccessToast('修改成功');
+    router.back();
+  } else {
+    showFailToast('修改失败');
+  }
 };
 
 </script>

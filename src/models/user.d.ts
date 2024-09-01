@@ -2,11 +2,11 @@
  * 用户类别
  */
 export type UserType = {
-    id: string;
+    id: number;
     username: string;
     avatar?: string;
     nickname?: string;
-    gender?: string;
+    gender?: number;
     birthday?: Date;
     region?: string;
     signature?: string;
